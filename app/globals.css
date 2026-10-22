@@ -1,0 +1,1110 @@
+@import "tailwindcss";
+
+/* ───────────────────────── Design tokens ───────────────────────── */
+
+@theme {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  /* Grounds, darkest → lightest */
+  --color-ink-0: #03050b;
+  --color-ink-1: #03060d;
+  --color-ink-2: #04070e;
+  --color-ink-3: #070d1a;
+  --color-ink-4: #0a1325;
+  --color-ink-5: #0b1426;
+  --color-ink-6: #0d182e;
+
+  /* Hairlines */
+  --color-line-1: #142039;
+  --color-line-2: #16223b;
+  --color-line-3: #1b2a47;
+  --color-line-4: #22355a;
+  --color-line-5: #2a3f66;
+  --color-line-6: #2f5ba8;
+
+  /* Brand blues */
+  --color-brand-deep: #0e4fc7;
+  --color-brand: #1565e6;
+  --color-brand-bright: #2f8cff;
+  --color-brand-light: #3d95ff;
+  --color-brand-soft: #7db8ff;
+  --color-cyan: #5cc8ff;
+  --color-cyan-light: #8fe0ff;
+  --color-cyan-pale: #9fd8ff;
+
+  /* Foreground */
+  --color-fg: #eef2f8;
+  --color-fg-2: #c9d2df;
+  --color-fg-3: #9aa8bf;
+  --color-fg-4: #8a99b3;
+  --color-fg-5: #7a8aa6;
+
+  --color-amber: #f5a524;
+  --color-danger: #ff8a8a;
+
+  --breakpoint-xs: 30rem;
+  /* Room for the full header: logo, nav and both calls to action. */
+  --breakpoint-wide: 90rem;
+
+  --ease-out-expo: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@theme inline {
+  --font-sans: var(--font-manrope), "Segoe UI", system-ui, sans-serif;
+  --font-display: var(--font-sora), "Segoe UI", system-ui, sans-serif;
+  --font-tech: var(--font-michroma), "Eurostile", "Segoe UI", sans-serif;
+}
+
+/* ───────────────────────── Base ───────────────────────── */
+
+@property --of-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@property --of-n {
+  syntax: "<integer>";
+  inherits: false;
+  initial-value: 0;
+}
+
+@layer base {
+  :root {
+    --header-h: 4.25rem;
+    color-scheme: dark;
+    interpolate-size: allow-keywords;
+  }
+
+  @media (min-width: 64rem) {
+    :root {
+      --header-h: 5.25rem;
+    }
+  }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background: var(--color-ink-2);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Lock page scroll while a modal (the mobile menu) is open. */
+  html:has(dialog[open]:modal) {
+    overflow: hidden;
+  }
+
+  ::selection {
+    background: rgb(61 149 255 / 0.35);
+    color: var(--color-white);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 3px;
+  }
+
+  summary {
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Smooth open/close for native disclosure widgets where supported. */
+  details::details-content {
+    block-size: 0;
+    overflow: clip;
+    transition:
+      block-size 0.4s var(--ease-out-expo),
+      content-visibility 0.4s allow-discrete;
+  }
+
+  details[open]::details-content {
+    block-size: auto;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    font: inherit;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--color-fg-5);
+  }
+
+  img,
+  svg {
+    max-width: 100%;
+  }
+}
+
+/* ───────────────────────── Type ───────────────────────── */
+
+/* Sized to its container so "Turn your credit" (7.445em) always holds one line. */
+@utility t-hero {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: min(5.4rem, 12.9cqi);
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+@utility t-display {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.5rem, 1.4rem + 4.6vw, 4.8rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+
+/* Longer page titles (a full sentence rather than a name). */
+@utility t-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.2rem, 1.45rem + 3vw, 4rem);
+  line-height: 1.04;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+
+@utility t-h2 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.95rem, 1.25rem + 2.6vw, 3.2rem);
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+@utility t-h2-sm {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 1.25rem + 2vw, 2.8rem);
+  line-height: 1.12;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+@utility t-cta {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 1.2rem + 3.4vw, 3.9rem);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+
+@utility t-lead {
+  font-size: clamp(1.0625rem, 0.98rem + 0.35vw, 1.1875rem);
+  line-height: 1.65;
+  color: var(--color-fg-3);
+  text-wrap: pretty;
+}
+
+@utility eyebrow {
+  font-family: var(--font-tech);
+  font-size: 0.6875rem;
+  letter-spacing: 0.24em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: var(--color-brand-light);
+}
+
+@utility tag {
+  font-family: var(--font-tech);
+  font-size: 0.625rem;
+  letter-spacing: 0.2em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+@utility shimmer-text {
+  background: linear-gradient(90deg, #2f8cff, #8fd0ff, #ffffff, #5cc8ff, #2f8cff);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: of-shimmer 6s linear infinite;
+  filter: drop-shadow(0 0 28px rgb(47 140 255 / 0.45));
+}
+
+@utility container-x {
+  width: 100%;
+  max-width: 80rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (min-width: 40rem) {
+    padding-inline: 2rem;
+  }
+}
+
+@utility section-y {
+  padding-block: 4.5rem;
+
+  @media (min-width: 48rem) {
+    padding-block: 6rem;
+  }
+
+  @media (min-width: 64rem) {
+    padding-block: 7.5rem;
+  }
+}
+
+/* ───────────────────────── Components ───────────────────────── */
+
+@layer components {
+  /* Primary CTA: the outer element carries focus ring + glow, the inner face is clipped. */
+  .btn-primary {
+    --slant: 18px;
+    position: relative;
+    display: inline-flex;
+    border-radius: 10px 0 0 10px;
+    color: var(--color-white);
+    font-weight: 700;
+    filter: drop-shadow(0 10px 26px rgb(21 101 230 / 0.42));
+    transition:
+      transform 0.25s var(--ease-out-expo),
+      filter 0.25s;
+  }
+
+  .btn-primary:hover {
+    color: var(--color-white);
+    transform: translateY(-2px);
+    filter: drop-shadow(0 14px 34px rgb(21 101 230 / 0.55)) brightness(1.15);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary > .btn-face {
+    position: relative;
+    display: inline-flex;
+    white-space: nowrap;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    min-height: inherit;
+    padding: 0 calc(1.75rem + var(--slant) * 0.6) 0 1.75rem;
+    overflow: hidden;
+    background: var(--color-brand);
+    border-radius: inherit;
+    clip-path: polygon(0 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+  }
+
+  /* On the narrowest phones the label needs the room more than the trailing arrow does. */
+  @media (max-width: 359px) {
+    .btn-primary > .btn-face {
+      padding-inline: 1.125rem calc(1.125rem + var(--slant) * 0.6);
+    }
+
+    .btn-primary > .btn-face > svg {
+      display: none;
+    }
+  }
+
+  .btn-primary.btn-block > .btn-face {
+    clip-path: none;
+    border-radius: 10px;
+    padding-inline: 1.5rem;
+  }
+
+  .btn-primary.btn-block {
+    border-radius: 10px;
+  }
+
+  .btn-primary[aria-disabled="true"],
+  .btn-primary:disabled {
+    filter: none;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-primary[aria-disabled="true"] > .btn-face,
+  .btn-primary:disabled > .btn-face {
+    background: var(--color-line-2);
+    color: var(--color-fg-3);
+  }
+
+  .btn-shine {
+    position: absolute;
+    inset-block: 0;
+    left: -60%;
+    width: 38%;
+    background: linear-gradient(100deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.45), rgb(255 255 255 / 0));
+    transform: skewX(-22deg);
+    animation: of-shine 5.5s ease-in-out 2.6s infinite;
+    pointer-events: none;
+  }
+
+  .btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    white-space: nowrap;
+    border: 1px solid var(--color-line-5);
+    border-radius: 10px;
+    background: rgb(12 22 42 / 0.45);
+    color: var(--color-fg);
+    font-weight: 600;
+    transition:
+      background-color 0.25s,
+      border-color 0.25s,
+      transform 0.25s var(--ease-out-expo);
+  }
+
+  .btn-ghost:hover {
+    background: rgb(61 149 255 / 0.1);
+    border-color: var(--color-brand-light);
+    color: var(--color-fg);
+    transform: translateY(-2px);
+  }
+
+  .link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    min-height: 2.75rem;
+    font-weight: 600;
+    color: var(--color-brand-light);
+    transition: color 0.2s;
+  }
+
+  .link-arrow:hover {
+    color: var(--color-brand-soft);
+  }
+
+  .link-arrow svg {
+    transition: transform 0.3s var(--ease-out-expo);
+  }
+
+  .link-arrow:hover svg {
+    transform: translateX(4px);
+  }
+
+  .card-lift {
+    transition:
+      transform 0.45s var(--ease-out-expo),
+      border-color 0.45s,
+      box-shadow 0.45s;
+  }
+
+  @media (hover: hover) {
+    .card-lift:hover {
+      transform: translateY(-6px);
+      border-color: var(--color-brand-light);
+      box-shadow:
+        0 28px 70px rgb(0 0 0 / 0.5),
+        0 0 44px rgb(31 123 255 / 0.2);
+    }
+  }
+
+  /* Pointer-tracked glow; --mx/--my are set by <Spotlight />. */
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .spotlight::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, -40%),
+      rgb(61 149 255 / 0.16),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+
+  /* Rotating light around a border. Set --ring-fill to the inner background. */
+  .ring-conic {
+    border: 1px solid transparent;
+    background:
+      var(--ring-fill, linear-gradient(#0a1325, #0a1325)) padding-box,
+      conic-gradient(
+          from var(--of-angle),
+          rgb(47 91 168 / 0.55) 0deg,
+          rgb(47 91 168 / 0.55) 240deg,
+          #5cc8ff 300deg,
+          #ffffff 315deg,
+          #2f8cff 330deg,
+          rgb(47 91 168 / 0.55) 360deg
+        )
+        border-box;
+    animation: of-rotate-angle 6s linear infinite;
+  }
+
+  /* Gradient hairline frame: wrap content in .frame-glow > .frame-glow-inner */
+  .frame-glow {
+    padding: 1px;
+    border-radius: 22px;
+    background: linear-gradient(160deg, rgb(92 200 255 / 0.55), rgb(34 53 90 / 0.6) 42%, rgb(34 53 90 / 0.25));
+  }
+
+  .frame-glow-inner {
+    border-radius: 21px;
+  }
+
+  .field-input {
+    width: 100%;
+    min-height: 3.125rem;
+    padding: 0 0.875rem;
+    background: var(--color-ink-3);
+    border: 1px solid var(--color-line-5);
+    border-radius: 10px;
+    color: var(--color-fg);
+    font-size: 1rem;
+    transition:
+      border-color 0.2s,
+      box-shadow 0.2s;
+  }
+
+  textarea.field-input {
+    min-height: 8rem;
+    padding-block: 0.75rem;
+    resize: vertical;
+  }
+
+  select.field-input {
+    appearance: none;
+    padding-right: 2.5rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233D95FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.875rem center;
+    background-size: 1.125rem;
+  }
+
+  .field-input:hover {
+    border-color: var(--color-line-6);
+  }
+
+  .field-input:focus {
+    outline: none;
+    border-color: var(--color-brand-light);
+    box-shadow: 0 0 0 3px rgb(61 149 255 / 0.25);
+  }
+
+  .field-input[aria-invalid="true"] {
+    border-color: var(--color-danger);
+    box-shadow: 0 0 0 3px rgb(255 138 138 / 0.15);
+  }
+
+  .check-input {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-top: 0.125rem;
+    accent-color: var(--color-brand);
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border: 1px solid var(--color-line-5);
+    border-radius: 999px;
+    background: var(--color-ink-5);
+    font-weight: 600;
+    font-size: 0.875rem;
+  }
+
+  .faq-plus {
+    transition: transform 0.3s var(--ease-out-expo);
+  }
+
+  details[open] > summary .faq-plus {
+    transform: rotate(45deg);
+  }
+
+  /* Horizontal snap rail used for card rows on small screens. */
+  .snap-rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(84%, 22rem);
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 1.25rem;
+    padding-inline: 1.25rem;
+    margin-inline: -1.25rem;
+    padding-bottom: 0.5rem;
+    scrollbar-width: none;
+  }
+
+  .snap-rail::-webkit-scrollbar {
+    display: none;
+  }
+
+  .snap-rail > * {
+    scroll-snap-align: start;
+  }
+
+  @media (min-width: 40rem) {
+    .snap-rail {
+      scroll-padding-inline: 2rem;
+      padding-inline: 2rem;
+      margin-inline: -2rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .snap-rail {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-columns: auto;
+      gap: 1.25rem;
+      overflow: visible;
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  .sr-only-focusable:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+/* Phones: labels never wrap, so button text scales with the viewport (14px at 320 → 16px by ~365).
+   Unlayered so it outranks the size utilities on each button. */
+@media (max-width: 39.999rem) {
+  .btn-primary,
+  .btn-ghost.btn-fluid {
+    font-size: clamp(0.8125rem, 4.4vw, 1rem);
+  }
+
+  .btn-primary.btn-block > .btn-face {
+    padding-inline: 1rem;
+  }
+}
+
+/* ───────────────────────── Header ───────────────────────── */
+
+.site-header {
+  background-color: rgb(4 7 14 / 0.86);
+  border-bottom: 1px solid var(--color-line-1);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+@supports (animation-timeline: scroll()) {
+  .site-header {
+    animation: of-header-solidify linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 140px;
+  }
+}
+
+@keyframes of-header-solidify {
+  from {
+    background-color: rgb(4 7 14 / 0);
+    border-bottom-color: rgb(20 32 57 / 0);
+    -webkit-backdrop-filter: blur(0);
+    backdrop-filter: blur(0);
+  }
+  to {
+    background-color: rgb(4 7 14 / 0.86);
+    border-bottom-color: var(--color-line-1);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+}
+
+/* Mobile menu sheet (native <dialog>) */
+.menu-sheet {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--color-ink-2);
+  color: var(--color-fg);
+  opacity: 0;
+  transform: translateY(-12px);
+  transition:
+    opacity 0.35s var(--ease-out-expo),
+    transform 0.35s var(--ease-out-expo),
+    overlay 0.35s allow-discrete,
+    display 0.35s allow-discrete;
+}
+
+.menu-sheet[open] {
+  opacity: 1;
+  transform: none;
+}
+
+@starting-style {
+  .menu-sheet[open] {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+}
+
+.menu-sheet::backdrop {
+  background: transparent;
+}
+
+.menu-sheet[open] .menu-item {
+  animation: of-rise-soft 0.5s var(--ease-out-expo) both;
+}
+
+/* ───────────────────────── Motion ───────────────────────── */
+
+.rise {
+  animation: of-rise 1s var(--ease-out-expo) both;
+}
+
+.rise-word {
+  display: inline-block;
+  animation: of-rise 1.1s var(--ease-out-expo) both;
+}
+
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: of-rise-soft linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 22%;
+  }
+}
+
+.orb-a {
+  animation: of-drift-a 16s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.orb-b {
+  animation: of-drift-b 21s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.grid-pan {
+  position: absolute;
+  inset: -64px 0 0 -64px;
+  background-image:
+    linear-gradient(rgb(130 170 240 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(130 170 240 / 0.07) 1px, transparent 1px);
+  background-size: 64px 64px;
+  animation: of-grid-pan 28s linear infinite;
+  will-change: transform;
+}
+
+.beam {
+  animation: of-beam 10s ease-in-out 1.8s infinite both;
+}
+
+.draw {
+  stroke-dasharray: 1800;
+  animation: of-draw 2.6s cubic-bezier(0.6, 0, 0.2, 1) 0.5s both;
+}
+
+.comet {
+  stroke-dasharray: 160 2200;
+  animation: of-comet 5.5s cubic-bezier(0.5, 0, 0.5, 1) 2.8s infinite both;
+}
+
+.twinkle {
+  animation: of-twinkle 3.4s ease-in-out infinite;
+}
+
+.breathe {
+  animation: of-breathe 7s ease-in-out infinite;
+}
+
+.pulse-dot {
+  animation: of-pulse 2.2s ease-out infinite;
+}
+
+.float-1 {
+  animation: of-float 7s ease-in-out infinite;
+}
+
+.float-2 {
+  animation: of-float 8.5s ease-in-out -3s infinite;
+}
+
+.float-3 {
+  animation: of-float 6.5s ease-in-out -1.5s infinite;
+}
+
+.sheen {
+  animation: of-sheen 6s ease-in-out 2.2s infinite both;
+}
+
+.pop {
+  animation: of-pop 0.6s cubic-bezier(0.3, 1.7, 0.5, 1) both;
+}
+
+.spin {
+  animation: of-spin 1.8s linear infinite;
+}
+
+.bar-fill {
+  transform-origin: left center;
+  animation: of-bar 1.6s var(--ease-out-expo) both;
+}
+
+.marquee-track {
+  animation: of-marquee 46s linear infinite;
+}
+
+.travel {
+  animation: of-travel 4.5s ease-in-out infinite;
+}
+
+.ring-pulse {
+  animation: of-ring 4s ease-out infinite;
+}
+
+/* Score gauge: the inline style holds the final value; keyframes only define the start. */
+.gauge-arc {
+  animation: of-gauge-fill 2.4s var(--ease-out-expo) var(--gauge-delay, 1s) both;
+}
+
+.gauge-needle {
+  transform-box: view-box;
+  transform-origin: 150px 150px;
+  animation: of-needle 2.4s var(--ease-out-expo) var(--gauge-delay, 1s) both;
+}
+
+.gauge-count {
+  counter-reset: of-score var(--of-n);
+  animation: of-count 2.4s var(--ease-out-expo) var(--gauge-delay, 1s) both;
+}
+
+.gauge-count::after {
+  content: counter(of-score);
+}
+
+@keyframes of-rise {
+  from {
+    opacity: 0;
+    translate: 0 34px;
+    filter: blur(10px);
+  }
+  to {
+    opacity: 1;
+    translate: none;
+    filter: none;
+  }
+}
+
+@keyframes of-rise-soft {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+@keyframes of-shine {
+  0% {
+    left: -60%;
+  }
+  30%,
+  100% {
+    left: 140%;
+  }
+}
+
+@keyframes of-shimmer {
+  from {
+    background-position: 0% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes of-drift-a {
+  from {
+    transform: translate(0, 0) scale(1);
+  }
+  to {
+    transform: translate(-140px, 90px) scale(1.18);
+  }
+}
+
+@keyframes of-drift-b {
+  from {
+    transform: translate(0, 0) scale(1.1);
+  }
+  to {
+    transform: translate(160px, -70px) scale(0.9);
+  }
+}
+
+@keyframes of-grid-pan {
+  to {
+    transform: translate(64px, 64px);
+  }
+}
+
+@keyframes of-beam {
+  0% {
+    transform: translateX(-900px) rotate(-38deg);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  40%,
+  100% {
+    transform: translateX(1900px) rotate(-38deg);
+    opacity: 0;
+  }
+}
+
+@keyframes of-draw {
+  from {
+    stroke-dashoffset: 1800;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes of-comet {
+  from {
+    stroke-dashoffset: 160;
+  }
+  to {
+    stroke-dashoffset: -2200;
+  }
+}
+
+@keyframes of-twinkle {
+  0%,
+  100% {
+    opacity: 0.15;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes of-breathe {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: translate(-50%, -50%) scale(0.96);
+  }
+  50% {
+    opacity: 0.32;
+    transform: translate(-50%, -50%) scale(1.04);
+  }
+}
+
+@keyframes of-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(92 200 255 / 0.7);
+  }
+  100% {
+    box-shadow: 0 0 0 12px rgb(92 200 255 / 0);
+  }
+}
+
+@keyframes of-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-16px);
+  }
+}
+
+@keyframes of-sheen {
+  0% {
+    transform: translateX(-160%) skewX(-20deg);
+  }
+  35%,
+  100% {
+    transform: translateX(320%) skewX(-20deg);
+  }
+}
+
+@keyframes of-pop {
+  from {
+    opacity: 0;
+    transform: scale(0);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes of-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes of-bar {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes of-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes of-rotate-angle {
+  to {
+    --of-angle: 360deg;
+  }
+}
+
+@keyframes of-travel {
+  from {
+    left: -25%;
+  }
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes of-ring {
+  0% {
+    transform: translate(-50%, -50%) scale(0.6);
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+}
+
+@keyframes of-gauge-fill {
+  from {
+    stroke-dashoffset: 377;
+  }
+}
+
+@keyframes of-needle {
+  from {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes of-count {
+  from {
+    --of-n: 300;
+  }
+}
+
+@keyframes of-stage-in {
+  from {
+    opacity: 0;
+    transform: perspective(1600px) rotateY(-26deg) rotateX(12deg) translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1600px) rotateY(-9deg) rotateX(4deg);
+  }
+}
+
+@keyframes of-card-in {
+  from {
+    opacity: 0;
+    transform: perspective(1400px) rotateY(-30deg) rotateX(14deg) rotate(-4deg) translateY(60px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: perspective(1400px) rotateY(-12deg) rotateX(6deg) rotate(-4deg);
+  }
+}
+
+@keyframes of-step-in {
+  from {
+    opacity: 0;
+    translate: 0 16px;
+  }
+  to {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+.step-in {
+  animation: of-step-in 0.5s var(--ease-out-expo) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Purely kinetic decorations have no meaningful resting state. */
+  .comet,
+  .beam {
+    display: none;
+  }
+}
